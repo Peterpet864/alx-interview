@@ -1,46 +1,45 @@
 #!/usr/bin/python3
-""" reads from std """
+
+"""Script that reads stdin line by line and computes metrics"""
+
 import sys
 
 
-def print_status(sdict, fsize):
-    """ prints format """
-    print("File size: {}".format(fsize))
-    for key in sorted(sdict.keys()):
-        if sdict[key] != 0:
-            print("{}: {}".format(key, sdict[key]))
+def printsts(dic, size):
+    """ WWPrints information """
+    print("File size: {:d}".format(size))
+    for i in sorted(dic.keys()):
+        if dic[i] != 0:
+            print("{}: {:d}".format(i, dic[i]))
 
 
-def log_parsing():
-    """ print logs"""
-    count = 0
-    fsize = 0
-    status_dict = {'200': 0, '301': 0, '400': 0, '401': 0,
-                   '403': 0, '404': 0, '405': 0, '500': 0}
+sts = {"200": 0, "301": 0, "400": 0, "401": 0, "403": 0,
+       "404": 0, "405": 0, "500": 0}
 
-    try:
-        for line in sys.stdin:
-            if count != 0 and count % 10 == 0:
-                print_status(status_dict, fsize)
+count = 0
+size = 0
 
-            File = line.split()
-            count += 1
+try:
+    for line in sys.stdin:
+        if count != 0 and count % 10 == 0:
+            printsts(sts, size)
 
-            try:
-                fsize += int(File[-1])
-            except Exception:
-                pass
-            try:
-                if File[-2] in status_dict.keys():
-                    status = File[-2]
-                    status_dict[status] += 1
-            except Exception:
-                pass
-        print_status(status_dict, fsize)
+        stlist = line.split()
+        count += 1
 
-    except KeyboardInterrupt:
-        print_status(status_dict, fsize)
-        raise
+        try:
+            size += int(stlist[-1])
+        except:
+            pass
+
+        try:
+            if stlist[-2] in sts:
+                sts[stlist[-2]] += 1
+        except:
+            pass
+    printsts(sts, size)
 
 
-log_parsing()
+except KeyboardInterrupt:
+    printsts(sts, size)
+    raise
